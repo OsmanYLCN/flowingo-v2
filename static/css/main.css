@@ -1,0 +1,207 @@
+:root {
+    --bs-border-radius: 0.5rem;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    color: #111;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 0 !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar .container-fluid {
+    position: relative;
+}
+
+.nav-center-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none; 
+}
+
+.nav-center-pill {
+    display: flex;
+    border: 1px solid #e0e0e0;
+    border-radius: 50rem;
+    background-color: #ffffff;
+    padding: 0.25rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.nav-center-pill .nav-link {
+    color: #555;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50rem;
+    margin: 0 2px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-center-pill .nav-link:hover {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.navbar .navbar-nav .nav-link {
+    font-weight: 500;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #000;
+}
+
+.motto-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;  
+    font-size: 6vw;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2; 
+    gap: 0.2em;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.motto-span {
+    opacity: 0; 
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.nav-pills .nav-link {
+    color: #aaa;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: var(--bs-border-radius);
+}
+
+.nav-pills .nav-link.active, 
+.nav-pills .show > .nav-link {
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: var(--bs-border-radius);
+}
+
+
+#authTabContent .form-label {
+    text-align: center;
+    width: 100%;
+    font-weight: 500; 
+    margin-bottom: 0.25rem;
+    color: #555;
+}
+
+#authTabContent .form-control {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0; 
+    border-radius: var(--bs-border-radius); 
+    padding: 0.75rem 1rem; 
+    text-align: center; 
+    box-shadow: none !important; 
+    transition: border-color 0.2s ease;
+}
+
+#authTabContent .form-control:focus {
+    border-color: #000000; 
+    background-color: #ffffff;
+}
+
+#authTabContent .btn {
+    padding: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--bs-border-radius); 
+    transition: transform 0.2s ease-in-out; 
+}
+
+#authTabContent .btn:hover {
+     transform: scale(1.02);
+}
+
+#task-list-container .card {
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+#task-list-container .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+#task-list-container .card-title {
+    font-weight: 700;
+}
+
+#task-list-container .badge {
+    border-radius: var(--bs-border-radius-pill);
+    font-weight: 500;
+    padding: 0.35em 0.75em;
+    font-size: 0.75rem;
+}
+
+#task-list-container .btn-outline-dark,
+#task-list-container .btn-outline-danger {
+    border: 0;
+    color: #555;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#task-list-container .btn-outline-dark:hover {
+    background-color: #000;
+    color: #fff;
+}
+#task-list-container .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+#task-modal .form-label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #555;
+}
+
+#task-modal .form-control,
+#task-modal .form-select {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--bs-border-radius);
+    padding: 0.75rem 1rem;
+    box-shadow: none !important; 
+    transition: border-color 0.2s ease;
+}
+
+#task-modal .form-control:focus,
+#task-modal .form-select:focus {
+    border-color: #000000; 
+    background-color: #ffffff;
+}

@@ -3,12 +3,20 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from tasks import views as tasks_views
 
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+router.register(r'tasks', tasks_views.TaskViewSet, basename='task')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # Ana sayfaya (127.0.0.1:8000) gelen isteği direkt 'templates/index.html' dosyasına yönlendir
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
-    
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path("auth/", TemplateView.as_view(template_name = 'auth/login_register.html'), name=""),
+    path('dashboard/', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
+    path('statistics/', TemplateView.as_view(template_name='statistics.html'), name='statistics'),
+
     path(
         'api/auth/register/',
         tasks_views.UserCreateView.as_view(),
@@ -21,4 +29,8 @@ urlpatterns = [
         name='user-login'
     ),
     
+    path (
+        'api/',
+        include(router.urls)
+    ),
 ]

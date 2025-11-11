@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Task
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task;
+        fields = ['id', 'title', 'description', 'category', 'status', 'dueDate', 'dueTime', 'owner']
+        read_only_fields = ['owner']
