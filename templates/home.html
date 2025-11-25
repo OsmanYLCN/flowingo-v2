@@ -5,22 +5,97 @@
 
 {% block content %}
 
-<div class="motto-container">
-  
-    <span class="motto-span" 
-          style="animation-delay: 0.5s;">
-        Flow,
-    </span>
+<div class="home-hero-section">
     
-    <span class="motto-span" 
-          style="animation-delay: 1.5s;">
-        Win
-    </span>
-    
-    <span class="motto-span" 
-          style="animation-delay: 2.5s;">
-        and Go
-    </span>
-    
+    <div class="motto-container">
+        <span class="motto-span" style="animation-delay: 0.5s;">Flow,</span>
+        <span class="motto-span" style="animation-delay: 1.5s;">Win</span>
+        <span class="motto-span" style="animation-delay: 2.5s;">and Go</span>
+    </div>
+
+    <div class="cta-buttons text-center">
+        
+        {% if user.is_authenticated %}
+            <p class="text-muted mb-4 fs-5">Pick up where you left off.</p>
+            
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'dashboard' %}" class="btn btn-dark btn-lg px-5 rounded-pill shadow-sm">
+                    <i class="bi bi-grid-fill me-2"></i>Dashboard
+                </a>
+
+                <button id="home-logout-btn" type="button" class="btn btn-danger btn-lg px-4 rounded-pill shadow-sm">
+                    Logout
+                </button>
+            </div>
+
+        {% else %}
+            <p class="text-muted mb-4 fs-5">Organize tasks, track progress, achieve goals.</p>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'auth' %}" class="btn btn-dark btn-lg px-5 rounded-pill shadow-sm">
+                    Login / Register
+                </a>
+            </div>
+        {% endif %}
+        
+    </div>
 </div>
+
+<div class="container py-5 mt-5">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100">
+                <div class="feature-icon mb-3"><i class="bi bi-list-check"></i></div>
+                <h4 class="fw-bold">Organize</h4>
+                <p class="text-muted">Categorize your tasks and manage your daily workflow efficiently.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100">
+                <div class="feature-icon mb-3"><i class="bi bi-pie-chart-fill"></i></div>
+                <h4 class="fw-bold">Visualize</h4>
+                <p class="text-muted">See your progress with interactive charts and detailed statistics.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100">
+                <div class="feature-icon mb-3"><i class="bi bi-bell-fill"></i></div>
+                <h4 class="fw-bold">Stay on Track</h4>
+                <p class="text-muted">Get timely alerts for upcoming deadlines and never miss a task.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-4 mt-5 text-muted small border-top">
+    &copy; 2025 Flowingo. All rights reserved.
+</footer>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // LOGOUT SCRIPTI
+    document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("home-logout-btn");
+        
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async () => {
+                const token = localStorage.getItem("flowingo_token");
+                if (token) {
+                    try {
+                        await fetch("http://127.0.0.1:8000/api/auth/logout/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Token ${token}`
+                            }
+                        });
+                    } catch (err) { console.error(err); }
+                }
+                localStorage.removeItem("flowingo_token");
+                window.location.reload(); 
+            });
+        }
+    });
+</script>
 {% endblock %}

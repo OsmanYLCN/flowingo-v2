@@ -5,7 +5,6 @@ from tasks import views as tasks_views
 
 from rest_framework.routers import DefaultRouter
 
-
 router = DefaultRouter()
 router.register(r'tasks', tasks_views.TaskViewSet, basename='task')
 
@@ -13,10 +12,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path("auth/", TemplateView.as_view(template_name = 'auth/login_register.html'), name=""),
+    
+    # DÜZELTİLEN SATIR BURASI (name='auth' eklendi)
+    path("auth/", TemplateView.as_view(template_name = 'auth/login_register.html'), name="auth"),
+    
     path('dashboard/', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
     path('statistics/', TemplateView.as_view(template_name='statistics.html'), name='statistics'),
 
+    # API Yolları (Frontend ile karışmasın diye api/ öneki var)
     path(
         'api/auth/register/',
         tasks_views.UserCreateView.as_view(),
@@ -32,5 +35,11 @@ urlpatterns = [
     path (
         'api/',
         include(router.urls)
+    ),
+
+    path(
+        'api/auth/logout/',
+        tasks_views.LogoutView.as_view(),
+        name='user-logout' # İsmi user-logout yaptık
     ),
 ]

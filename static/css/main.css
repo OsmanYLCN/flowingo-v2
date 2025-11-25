@@ -205,3 +205,118 @@ body {
     border-color: #000000; 
     background-color: #ffffff;
 }
+
+/* --- YENİ EKLENEN ANA SAYFA STİLLERİ --- */
+
+/* Tüm karşılama ekranını ortalayan kapsayıcı */
+.home-hero-section {
+    min-height: 85vh; /* Ekranı kapla */
+    display: flex;
+    flex-direction: column; /* Alt alta diz */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Senin orijinal motto container'ın ayarı */
+/* Height'ı auto yapıyoruz ki butonlar sığsın, flex yapısı bozulmasın */
+.motto-container {
+    height: auto !important; 
+    margin-bottom: 2rem; /* Butonlarla arasına boşluk */
+    /* Diğer özelliklerin (font-size vb) yukarıda zaten tanımlı kalacak */
+}
+
+/* Butonların olduğu kapsayıcı */
+.cta-buttons {
+    opacity: 0; /* Başlangıçta görünmez */
+    transform: translateY(20px);
+    /* Motto bittikten sonra (2.5s + 0.8s = 3.3s) devreye girer */
+    animation: fadeIn 1s ease-out forwards; 
+    animation-delay: 3.5s; 
+}
+
+/* Özellik Kartları */
+.feature-card {
+    background: #fff;
+    border-radius: var(--bs-border-radius);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #f8f9fa;
+    color: #111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin: 0 auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    background-color: #000;
+    color: #fff;
+}
+/* --- ANA SAYFA EKLEMELERİ --- */
+
+/* Sayfayı ortalayan kapsayıcı */
+.home-hero-section {
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Senin animasyon kutunun yüksekliğini otomatiğe çekiyoruz ki butonlar sığsın */
+.motto-container {
+    height: auto !important; 
+    margin-bottom: 2rem;
+}
+
+/* Butonların olduğu kutu */
+.cta-buttons {
+    opacity: 0; /* Başlangıçta gizli */
+    transform: translateY(20px);
+    /* Animasyon (Yazı bittikten sonra devreye girer: 3.5s gecikme) */
+    animation: fadeIn 1s ease-out forwards; 
+    animation-delay: 3.5s; 
+}
+
+/* Aşağıdaki Kartların Tasarımı */
+.feature-card {
+    background: #fff;
+    border-radius: var(--bs-border-radius);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #f8f9fa;
+    color: #111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin: 0 auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    background-color: #000;
+    color: #fff;
+}
