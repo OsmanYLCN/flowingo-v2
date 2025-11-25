@@ -19,22 +19,27 @@
     <div class="col-md-4">
         <select id="filter-category" class="form-select">
             <option value="">All Categories</option>
-            </select>
+            <option value="General">General</option>
+            <option value="Personal">Personal</option>
+            <option value="Work">Work</option>
+            <option value="Education">Education</option>
+            <option value="Health">Health</option>
+            <option value="Finance">Finance</option>
+        </select>
     </div>
     <div class="col-md-4">
         <select id="filter-status" class="form-select">
             <option value="">All Statuses</option>
             <option value="To-Do">To-Do</option>
             <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
+            <option value="Completed">Completed</option>
         </select>
     </div>
 </div>
 
 <div class="row" id="task-list-container">
-    <p id="loading-tasks">Loading tasks...</p>
+    <p id="loading-tasks" class="text-center text-muted">Loading tasks...</p>
 </div>
-
 
 <div class="modal fade" id="task-modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -58,14 +63,21 @@
                     <div class="row">
                         <div class="col">
                             <label for="task-category" class="form-label">Category</label>
-                            <input type="text" class="form-control" id="task-category" value="General">
+                            <select class="form-select" id="task-category">
+                                <option value="General" selected>General</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Work">Work</option>
+                                <option value="Education">Education</option>
+                                <option value="Health">Health</option>
+                                <option value="Finance">Finance</option>
+                            </select>
                         </div>
                         <div class="col">
                             <label for="task-status" class="form-label">Status</label>
                             <select class="form-select" id="task-status">
                                 <option value="To-Do" selected>To-Do</option>
                                 <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
@@ -91,7 +103,8 @@
 </div>
 
 <div class="modal fade" id="delete-confirm-modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered"> 
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Confirm Deletion</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

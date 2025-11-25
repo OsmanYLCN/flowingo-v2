@@ -6,7 +6,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
-
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -20,7 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     
 class TaskSerializer(serializers.ModelSerializer):
+    is_due_soon = serializers.ReadOnlyField()
+    is_overdue = serializers.ReadOnlyField()
     class Meta:
         model = Task;
-        fields = ['id', 'title', 'description', 'category', 'status', 'dueDate', 'dueTime', 'owner']
+        fields = ['id', 'title', 'description', 'category', 'status', 'dueDate', 'dueTime', 'owner', 'is_due_soon', 'is_overdue']
         read_only_fields = ['owner']
