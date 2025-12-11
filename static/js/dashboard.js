@@ -57,25 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- 2. FİLTRELEME MANTIĞI (SORUN BURADAYDI, DÜZELTİLDİ) ---
+    // --- 2. FİLTRELEME MANTIĞI ---
     function filterTasks() {
         const searchTerm = filterSearch.value.toLowerCase();
         const selectedCategory = filterCategory.value;
         const selectedStatus = filterStatus.value;
 
-        // Konsola yazdıralım ki çalıştığını gör
-        console.log("Filtreleniyor...", {searchTerm, selectedCategory, selectedStatus});
-
         const filtered = allTasks.filter(task => {
-            // Arama filtresi
             const matchesSearch = task.title.toLowerCase().includes(searchTerm);
-            
-            // Kategori filtresi (Boşsa hepsini getir, doluysa eşleşeni getir)
             const matchesCategory = selectedCategory === "" || task.category === selectedCategory;
-            
-            // Statü filtresi
             const matchesStatus = selectedStatus === "" || task.status === selectedStatus;
-
             return matchesSearch && matchesCategory && matchesStatus;
         });
 
@@ -112,35 +103,45 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (task.status === "In Progress") badgeColor = "bg-info text-dark";
         else if (task.status === "Completed") badgeColor = "bg-success";
 
-        // --- TARİH HESAPLAMA (JS TARAFINDA) ---
-        // Backend'den ne gelirse gelsin, hesabı burada yapıyoruz.
+        // --- TARİH HESAPLAMA ---
         const now = new Date();
-        
-        // Saat formatını temizle (18:03:00 -> 18:03)
         let cleanTime = task.dueTime;
         if(cleanTime && cleanTime.length > 5) cleanTime = cleanTime.substring(0, 5);
-        
-        // Tarihi birleştir: "2025-11-25T18:03"
         const dueDateTime = new Date(`${task.dueDate}T${cleanTime}`);
-        
-        // Farkı bul (milisaniye)
         const diffMs = dueDateTime - now;
         const diffHours = diffMs / (1000 * 60 * 60);
 
         let borderClass = "border-0"; 
         let alertHtml = "";
 
-        // Sadece tamamlanmamış görevler için uyarı ver
         if (task.status !== "Completed") {
             if (diffMs < 0) {
-                // SÜRE BİTMİŞ -> KIRMIZI
                 borderClass = "border border-danger border-3"; 
                 alertHtml = `<div class="text-danger fw-bold mt-1"><i class="bi bi-exclamation-octagon"></i> Overdue!</div>`;
             } else if (diffHours < 24) {
-                // 24 SAATTEN AZ -> TURUNCU
                 borderClass = "border border-warning border-3"; 
                 alertHtml = `<div class="text-warning fw-bold mt-1"><i class="bi bi-hourglass-split"></i> Due Soon!</div>`;
             }
+        }
+
+        // --- DOSYALARI LİSTELEME ---
+        let attachmentsHtml = "";
+        if (task.attachments && task.attachments.length > 0) {
+            attachmentsHtml = `<div class="mt-2 pt-2 border-top small">
+                <strong>Attachments:</strong>
+                <ul class="list-unstyled mb-0">`;
+            
+            task.attachments.forEach(file => {
+                // Dosya linki varsa göster
+                if (file.file_url) {
+                    attachmentsHtml += `<li>
+                        <a href="${file.file_url}" target="_blank" class="text-decoration-none text-primary">
+                            <i class="bi bi-paperclip"></i> ${file.file_name}
+                        </a>
+                    </li>`;
+                }
+            });
+            attachmentsHtml += `</ul></div>`;
         }
 
         cardCol.innerHTML = `
@@ -162,6 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
                          ${alertHtml}
                     </div>
 
+                    ${attachmentsHtml}
+
                     <div class="mt-3 pt-2 border-top">
                         <button class="btn btn-sm btn-outline-dark edit-btn" data-task-id="${task.id}">Edit</button>
                         <button class="btn btn-sm btn-outline-danger delete-btn" data-task-id="${task.id}">Delete</button>
@@ -172,29 +175,41 @@ document.addEventListener("DOMContentLoaded", () => {
         return cardCol;
     }
     
-    // --- STANDART BUTTON EVENTS (DEĞİŞMEDİ) ---
-
+    // --- GÖREV EKLEME BUTONU ---
     addTaskBtn.addEventListener("click", () => {
         modalTitle.textContent = "Add New Task";
         taskForm.reset();
         document.getElementById("task-id").value = ""; 
+        
+        // Tarihleri bugüne ayarla
         const now = new Date();
         document.getElementById("task-dueDate").value = now.toISOString().split('T')[0];
         document.getElementById("task-dueTime").value = now.toTimeString().slice(0,5);
+        
+        // Dosya inputunu temizle (Önemli!)
+        const fileInput = document.getElementById("task-file");
+        if(fileInput) fileInput.value = ""; 
+        
         taskModal.show();
     });
 
+    // --- FORM SUBMIT (KAYDETME VE DOSYA YÜKLEME) ---
     taskForm.addEventListener("submit", async (e) => {
         e.preventDefault(); 
-        const taskData = {
-            title: document.getElementById("task-title").value,
-            description: document.getElementById("task-description").value,
-            category: document.getElementById("task-category").value,
-            status: document.getElementById("task-status").value,
-            dueDate: document.getElementById("task-dueDate").value,
-            dueTime: document.getElementById("task-dueTime").value
-        };
+        
+        const title = document.getElementById("task-title").value;
+        const description = document.getElementById("task-description").value;
+        const category = document.getElementById("task-category").value;
+        const status = document.getElementById("task-status").value;
+        const dueDate = document.getElementById("task-dueDate").value;
+        const dueTime = document.getElementById("task-dueTime").value;
+        
         const taskId = document.getElementById("task-id").value;
+        
+        // Dosya kontrolü
+        const fileInput = document.getElementById("task-file");
+        const selectedFile = fileInput ? fileInput.files[0] : null;
+
         let method = "POST";
         let url = "http://127.0.0.1:8000/api/tasks/";
 
@@ -204,18 +219,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         try {
+            // 1. Önce GÖREVİ kaydet
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${token}`
                 },
-                body: JSON.stringify(taskData)
+                body: JSON.stringify({ title, description, category, status, dueDate, dueTime })
             });
 
-            if (response.status === 201 || response.status === 200) {
+            if (response.ok) {
+                // Görev yanıtını al (ID lazım)
+                const savedTask = await response.json();
+                const targetTaskId = taskId ? taskId : savedTask.id;
+
+                // 2. Eğer dosya seçildiyse DOSYAYI yükle
+                if (selectedFile) {
+                    const formData = new FormData();
+                    formData.append("task", targetTaskId);
+                    formData.append("file", selectedFile);
+
+                    console.log("Uploading file...", selectedFile.name);
+
+                    const fileResponse = await fetch("http://127.0.0.1:8000/api/attachments/", {
+                        method: "POST",
+                        headers: {
+                            // FormData'da Content-Type ELLE YAZILMAZ!
+                            "Authorization": `Token ${token}`
+                        },
+                        body: formData
+                    });
+                    
+                    if (!fileResponse.ok) {
+                        console.error("File upload failed!");
+                        alert("Task saved but file upload failed.");
+                    }
+                }
+
+                // Her şey bitti, kapat ve yenile
                 taskModal.hide();
                 fetchTasks();
+
             } else {
                 alert("Error saving task.");
             }
@@ -224,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // --- SİLME VE DÜZENLEME BUTONLARI ---
     taskListContainer.addEventListener("click", async (e) => {
         const target = e.target.closest('button');
         if (!target) return;
@@ -244,14 +290,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("task-category").value = task.category;
                 document.getElementById("task-status").value = task.status;
                 document.getElementById("task-dueDate").value = task.dueDate;
+                
                 let cleanTime = task.dueTime;
                 if(cleanTime.length > 5) cleanTime = cleanTime.substring(0, 5);
                 document.getElementById("task-dueTime").value = cleanTime;
+                
+                // Edit modunda dosya inputunu temizle (yeni dosya yüklemek isterse seçsin)
+                const fileInput = document.getElementById("task-file");
+                if(fileInput) fileInput.value = "";
+
                 taskModal.show();
             }
         }
     });
 
+    // --- SİLME ONAYI ---
     confirmDeleteBtn.addEventListener("click", async () => {
         const taskId = confirmDeleteBtn.dataset.taskId;
         if (taskId) {

@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
-from .serializers import UserSerializer, TaskSerializer
-
+from .serializers import UserSerializer, TaskSerializer, AttachmentSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import authenticate, login, logout # Login ve Logout eklendi
 from rest_framework.authtoken.models import Token 
 from rest_framework.response import Response 
 from rest_framework.views import APIView 
 from rest_framework import status, viewsets
-from .models import Task
+from .models import Task, Attachment
 from django.shortcuts import redirect
 
 class UserCreateView(generics.CreateAPIView):
@@ -34,11 +34,7 @@ class LoginView(APIView):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            # 1. Token Oluştur/Getir
             token, created = Token.objects.get_or_create(user=user)
-            
-            # 2. KRİTİK HAMLE: Django Session Oturumunu Başlat
-            # Bu sayede {% if user.is_authenticated %} çalışacak.
             login(request, user)
             
             return Response({
@@ -71,12 +67,25 @@ class LogoutView(APIView):
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
-
     def get_queryset(self):
-        # Eğer kullanıcı giriş yapmamışsa boş liste döndür (Hata almamak için)
         if self.request.user.is_anonymous:
             return Task.objects.none()
-        return Task.objects.filter(owner = self.request.user)
-    
+        
+        return Task.objects.filter(owner=self.request.user).prefetch_related('attachments')
+
     def perform_create(self, serializer):
-        serializer.save(owner = self.request.user)
+        serializer.save(owner=self.request.user)
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get_queryset(self):
+        # Sadece kendi dosyalarını gör
+        return Attachment.objects.filter(task__owner=self.request.user)
+
+    def perform_create(self, serializer):
+        # Yükleyeni otomatik kaydet
+        serializer.save(uploaded_by=self.request.user)

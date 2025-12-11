@@ -56,10 +56,12 @@
                         <label for="task-title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="task-title" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="task-description" class="form-label">Description</label>
                         <textarea class="form-control" id="task-description" rows="3"></textarea>
                     </div>
+
                     <div class="row">
                         <div class="col">
                             <label for="task-category" class="form-label">Category</label>
@@ -79,6 +81,14 @@
                                 <option value="In Progress">In Progress</option>
                                 <option value="Completed">Completed</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3">
+                        <label for="task-file" class="form-label fw-bold">Attachment (Optional)</label>
+                        <input type="file" class="form-control" id="task-file">
+                        <div class="form-text text-muted">
+                            <i class="bi bi-paperclip"></i> Supported: PDF, PNG, JPG, DOCX (Max 10MB)
                         </div>
                     </div>
                     <div class="row mt-3">

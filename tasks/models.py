@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import datetime, timedelta
-
+import os
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 # Create your models here.
 
 class Task(models.Model):
@@ -67,3 +69,29 @@ def is_overdue(self):
         dt_aware = dt_combine
 
     return timezone.now() > dt_aware
+
+
+class Attachment(models.Model):
+    task = models.ForeignKey(Task, related_name='attachments', on_delete=models.CASCADE)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='task_attachments/')
+    file_name = models.CharField(max_length=255)
+    file_size = models.PositiveIntegerField(104857600)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.file :
+            self.file_size = self.file.size
+            if not self.file_name:
+                self.file_name = os.path.basename(self.file.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.file_name
+    
+@receiver(post_delete, sender=Attachment)
+def delete_file_on_db_delete(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
