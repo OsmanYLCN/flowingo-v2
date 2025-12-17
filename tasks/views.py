@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, parsers
 from .serializers import UserSerializer, TaskSerializer, AttachmentSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import authenticate, login, logout # Login ve Logout eklendi
@@ -67,25 +67,38 @@ class LogoutView(APIView):
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Task.objects.none()
         
-        return Task.objects.filter(owner=self.request.user).prefetch_related('attachments')
-
+        if self.request.user.is_staff:
+            return Task.objects.all().prefetch_related('attachments').order_by('-created_at')
+        
+        return Task.objects.filter(owner__id=self.request.user.id).prefetch_related('attachments').order_by('-created_at')
+    
     def perform_create(self, serializer):
+        if self.request.user.is_staff and 'owner_id' in self.request.data:
+            from django.contrib.auth.models import User
+            try:
+                target_user = User.objects.get(id = self.request.data('owner_id'))
+                serializer.save(owner=target_user)
+                return
+            except User.DoesNotExist:
+                pass
+
         serializer.save(owner=self.request.user)
 
 class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (parsers.MultiPartParser, parsers.FormParser)
 
     def get_queryset(self):
-        # Sadece kendi dosyalarını gör
         return Attachment.objects.filter(task__owner=self.request.user)
 
     def perform_create(self, serializer):
-        # Yükleyeni otomatik kaydet
         serializer.save(uploaded_by=self.request.user)
+        

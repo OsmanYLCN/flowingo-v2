@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from tasks import views as tasks_views
 from rest_framework.routers import DefaultRouter
-
+from rest_framework.authtoken.views import obtain_auth_token
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -37,8 +37,11 @@ urlpatterns = [
     path(
         'api/auth/logout/',
         tasks_views.LogoutView.as_view(),
-        name='user-logout' # İsmi user-logout yaptık
+        name='user-logout'
     ),
+
+    path('auth/login/', obtain_auth_token),
+
 ]
 
 if settings.DEBUG:
