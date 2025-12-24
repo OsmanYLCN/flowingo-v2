@@ -7,9 +7,11 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h2">My Tasks</h1>
-    <button class="btn btn-dark" id="add-task-btn">
-        <i class="bi bi-plus-lg"></i> Add New Task
-    </button>
+    <div>
+        <button class="btn btn-dark" id="add-task-btn">
+            <i class="bi bi-plus-lg"></i> Add New Task
+        </button>
+    </div>
 </div>
 
 <div class="row mb-3">
@@ -52,6 +54,14 @@
                 <form id="task-form">
                     <input type="hidden" id="task-id">
 
+                    <div class="mb-3 p-3 bg-light border rounded" id="assignUserContainer" style="display: none;">
+                        <label for="taskOwnerSelect" class="form-label text-danger fw-bold">
+                            <i class="bi bi-person-check-fill"></i> Assign to User (Admin Only)
+                        </label>
+                        <select class="form-select border-danger" id="taskOwnerSelect">
+                            <option value="">Assign to Myself (Default)</option>
+                            </select>
+                    </div>
                     <div class="mb-3">
                         <label for="task-title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="task-title" required>
@@ -128,8 +138,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div>  
 {% endblock %}
 
 {% block scripts %}

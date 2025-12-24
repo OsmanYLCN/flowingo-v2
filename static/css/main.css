@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --bs-border-radius: 0.5rem;
+    --bs-border-radius: 0.75rem;
+    --bs-primary: #111111;
+    --bs-body-bg: #ffffff;
+    --shadow-soft: 0 4px 12px rgba(0,0,0,0.05); 
+    --shadow-hover: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 body {
@@ -10,21 +16,37 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* --- 1. NAVBAR --- */
 .navbar {
     background-color: #ffffff !important;
-    border-bottom: 0 !important;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e5e5 !important;
+    
+    padding-top: 1.5rem !important;    
+    padding-bottom: 1.5rem !important;
+    
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
+
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
+    font-weight: 800; 
+    font-size: 1.8rem; 
+    letter-spacing: -0.5px;
+    color: #000 !important;
 }
 
-.navbar .container-fluid {
-    position: relative;
+/* Sağ taraftaki İkonlar (Profil, Login, Logout) */
+.navbar .bi {
+    font-size: 1.75rem !important; 
+    color: #333;
+    transition: color 0.2s;
+}
+.navbar .bi:hover {
+    color: #000;
 }
 
+/* --- ORTA MENÜ --- */
 .nav-center-wrapper {
     position: absolute;
     left: 50%;
@@ -38,285 +60,217 @@ body {
     border: 1px solid #e0e0e0;
     border-radius: 50rem;
     background-color: #ffffff;
-    padding: 0.25rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    padding: 0.2rem; /* Çerçeve kalınlığı */
+    box-shadow: var(--shadow-soft);
+    gap: 5px;
 }
 
 .nav-center-pill .nav-link {
     color: #555;
-    font-weight: 500;
-    padding: 0.5rem 1.25rem;
+    font-weight: 600; /* Yazı kalınlığı */
+    font-size: 1rem;  /* Yazı büyüklüğü */
+    padding: 0.6rem 1.5rem; /* Buton içi */
     border-radius: 50rem;
-    margin: 0 2px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .nav-center-pill .nav-link:hover {
-    background-color: #000000;
-    color: #ffffff;
-}
-
-.navbar .navbar-nav .nav-link {
-    font-weight: 500;
-    color: #555;
-    transition: color 0.2s ease;
-}
-
-.navbar .navbar-nav .nav-link:hover {
     color: #000;
+    background-color: #f3f4f6;
 }
 
-.motto-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70vh;  
-    font-size: 6vw;
-    font-weight: 700;
-    text-align: center;
-    line-height: 1.2; 
-    gap: 0.2em;
+/* Profil İsmi */
+#navbar-username {
+    font-weight: 600;
+    font-size: 0.9rem;
+    background-color: #f3f4f6;
+    padding: 8px 16px; /* Daha geniş */
+    border-radius: 30px;
+    color: #111;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* --- 2. KART TASARIMLARI --- */
+.card, .feature-card {
+    border: 1px solid #f0f0f0 !important;
+    border-radius: var(--bs-border-radius) !important;
+    box-shadow: var(--shadow-soft);
+    background-color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.motto-span {
-    opacity: 0; 
-    animation: fadeIn 0.8s ease-out forwards;
-}
-
-.nav-pills .nav-link {
-    color: #aaa;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    border-radius: var(--bs-border-radius);
-}
-
-.nav-pills .nav-link.active, 
-.nav-pills .show > .nav-link {
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: var(--bs-border-radius);
-}
-
-
-#authTabContent .form-label {
-    text-align: center;
-    width: 100%;
-    font-weight: 500; 
-    margin-bottom: 0.25rem;
-    color: #555;
-}
-
-#authTabContent .form-control {
-    background-color: #f8f9fa;
-    border: 1px solid #e0e0e0; 
-    border-radius: var(--bs-border-radius); 
-    padding: 0.75rem 1rem; 
-    text-align: center; 
-    box-shadow: none !important; 
-    transition: border-color 0.2s ease;
-}
-
-#authTabContent .form-control:focus {
-    border-color: #000000; 
-    background-color: #ffffff;
-}
-
-#authTabContent .btn {
-    padding: 0.75rem;
-    font-weight: 500;
-    border-radius: var(--bs-border-radius); 
-    transition: transform 0.2s ease-in-out; 
-}
-
-#authTabContent .btn:hover {
-     transform: scale(1.02);
-}
-
-#task-list-container .card {
-    border: 0;
-    border-radius: var(--bs-border-radius);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    transition: all 0.3s ease;
-}
-
-#task-list-container .card:hover {
+.card:hover, .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-hover) !important;
+    border-color: #e5e5e5 !important;
 }
 
 #task-list-container .card-title {
     font-weight: 700;
+    font-size: 1.15rem;
 }
 
-#task-list-container .badge {
-    border-radius: var(--bs-border-radius-pill);
-    font-weight: 500;
-    padding: 0.35em 0.75em;
-    font-size: 0.75rem;
-}
+/* Kart Kenar Renkleri */
+.card.border-success { border-left: 5px solid #10b981 !important; }
+.card.border-warning { border-left: 5px solid #f59e0b !important; }
+.card.border-danger  { border-left: 5px solid #ef4444 !important; }
 
-#task-list-container .btn-outline-dark,
-#task-list-container .btn-outline-danger {
-    border: 0;
-    color: #555;
-    font-weight: 500;
-    padding: 0.25rem 0.75rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
+/* Etiketler */
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.9em;
+    border-radius: 8px;
+    font-size: 0.8rem;
 }
+.bg-warning { background-color: #fffbeb !important; color: #b45309 !important; border: 1px solid #fcd34d; }
+.bg-info    { background-color: #eff6ff !important; color: #1d4ed8 !important; border: 1px solid #bfdbfe; }
+.bg-success { background-color: #ecfdf5 !important; color: #047857 !important; border: 1px solid #6ee7b7; }
+.bg-secondary { background-color: #f3f4f6 !important; color: #4b5563 !important; border: 1px solid #e5e7eb; }
 
-#task-list-container .btn-outline-dark:hover {
-    background-color: #000;
-    color: #fff;
-}
-#task-list-container .btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-#task-modal .form-label {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    color: #555;
-}
-
-#task-modal .form-control,
-#task-modal .form-select {
-    background-color: #f8f9fa;
+/* --- 3. FORMLAR --- */
+.form-control, .form-select {
+    background-color: #fff;
     border: 1px solid #e0e0e0;
-    border-radius: var(--bs-border-radius);
-    padding: 0.75rem 1rem;
-    box-shadow: none !important; 
-    transition: border-color 0.2s ease;
-}
-
-#task-modal .form-control:focus,
-#task-modal .form-select:focus {
-    border-color: #000000; 
-    background-color: #ffffff;
-}
-
-/* --- YENİ EKLENEN ANA SAYFA STİLLERİ --- */
-
-/* Tüm karşılama ekranını ortalayan kapsayıcı */
-.home-hero-section {
-    min-height: 85vh; /* Ekranı kapla */
-    display: flex;
-    flex-direction: column; /* Alt alta diz */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Senin orijinal motto container'ın ayarı */
-/* Height'ı auto yapıyoruz ki butonlar sığsın, flex yapısı bozulmasın */
-.motto-container {
-    height: auto !important; 
-    margin-bottom: 2rem; /* Butonlarla arasına boşluk */
-    /* Diğer özelliklerin (font-size vb) yukarıda zaten tanımlı kalacak */
-}
-
-/* Butonların olduğu kapsayıcı */
-.cta-buttons {
-    opacity: 0; /* Başlangıçta görünmez */
-    transform: translateY(20px);
-    /* Motto bittikten sonra (2.5s + 0.8s = 3.3s) devreye girer */
-    animation: fadeIn 1s ease-out forwards; 
-    animation-delay: 3.5s; 
-}
-
-/* Özellik Kartları */
-.feature-card {
-    background: #fff;
-    border-radius: var(--bs-border-radius);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.feature-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem; /* Daha geniş inputlar */
     color: #111;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
-    margin: 0 auto;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
 }
 
-.feature-card:hover .feature-icon {
-    background-color: #000;
+.form-control:focus, .form-select:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.05) !important;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+/* --- 4. BUTONLAR --- */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.7rem 1.5rem; /* Daha büyük butonlar */
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-dark {
+    background-color: #111;
+    border-color: #111;
     color: #fff;
 }
-/* --- ANA SAYFA EKLEMELERİ --- */
+.btn-dark:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
 
-/* Sayfayı ortalayan kapsayıcı */
+.btn-outline-dark {
+    border: 2px solid #f0f0f0;
+    color: #333;
+    font-weight: 600;
+}
+.btn-outline-dark:hover {
+    background-color: #fff;
+    border-color: #000;
+    color: #000;
+}
+.btn-outline-danger {
+    border: 2px solid #fef2f2;
+    color: #dc2626;
+    background-color: #fff;
+}
+.btn-outline-danger:hover {
+    background-color: #fee2e2;
+    border-color: #dc2626;
+}
+
+/* --- 5. HOME SAYFASI --- */
 .home-hero-section {
     min-height: 85vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
-/* Senin animasyon kutunun yüksekliğini otomatiğe çekiyoruz ki butonlar sığsın */
 .motto-container {
-    height: auto !important; 
-    margin-bottom: 2rem;
-}
-
-/* Butonların olduğu kutu */
-.cta-buttons {
-    opacity: 0; /* Başlangıçta gizli */
-    transform: translateY(20px);
-    /* Animasyon (Yazı bittikten sonra devreye girer: 3.5s gecikme) */
-    animation: fadeIn 1s ease-out forwards; 
-    animation-delay: 3.5s; 
-}
-
-/* Aşağıdaki Kartların Tasarımı */
-.feature-card {
-    background: #fff;
-    border-radius: var(--bs-border-radius);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.feature-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #f8f9fa;
+    font-size: 6rem; 
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 3rem;
     color: #111;
-    border-radius: 50%;
+    height: auto !important;
+}
+
+@media (max-width: 768px) {
+    .motto-container { font-size: 3.5rem; }
+    .navbar-brand { font-size: 1.5rem; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.motto-span {
+    opacity: 0;
+    display: inline-block;
+    animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.cta-buttons {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 3.2s;
+}
+
+/* --- 6. İSTATİSTİK İKONLARI --- */
+.icon-box {
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.75rem;
-    margin: 0 auto;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 16px;
+    font-size: 1.6rem;
 }
 
-.feature-card:hover .feature-icon {
-    background-color: #000;
-    color: #fff;
+footer {
+    border-top: 1px solid #f0f0f0 !important;
+    background-color: #fff;
+    margin-top: 5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.nav-pills .nav-link {
+    color: #666 !important; 
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #f3f4f6;
+    color: #000 !important;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #000000 !important; 
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+}
+
+.form-control:focus {
+    border-color: #000 !important;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.05) !important;
 }

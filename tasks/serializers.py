@@ -34,7 +34,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     is_due_soon = serializers.ReadOnlyField()
     is_overdue = serializers.ReadOnlyField()
-
+    owner = serializers.ReadOnlyField(source='owner.username')
     attachments = AttachmentSerializer(many=True, read_only=True)
     class Meta:
         model = Task;

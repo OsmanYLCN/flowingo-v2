@@ -18,26 +18,14 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container-fluid px-4">
         
-        <a class="navbar-brand" href="/">Flowingo</a>
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+            <img src="{% static 'img/favicon.png' %}" alt="Flowingo Logo" height="36" class="d-inline-block align-text-top">
+            <span>Flowingo</span>
+        </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav ms-auto">
-                 <li class="nav-item" id="nav-login-link">
-                    <a class="nav-link" href="/auth/" title="Login / Register">
-                        <i class="bi bi-person" style="font-size: 1.5rem;"></i>
-                    </a>
-                 </li>
-                 <li class="nav-item" id="nav-logout-link" style="display: none;">
-                    <a class="nav-link" href="#" id="logout-button" title="Logout">
-                        <i class="bi bi-box-arrow-right" style="font-size: 1.5rem;"></i>
-                    </a>
-                 </li>
-            </ul>
-        </div>
         
         <div class="nav-center-wrapper" id="nav-center-links" style="display: none;">
             <div class="nav-center-pill">
@@ -45,16 +33,198 @@
                 <a class="nav-link" href="/statistics/">Statistics</a>
             </div>
         </div>
+        
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto align-items-center">
+                 <li class="nav-item" id="nav-login-link">
+                    <a class="nav-link" href="/auth/" title="Login / Register">
+                        <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                    </a>
+                 </li>
+
+                 <li class="nav-item me-2 d-flex align-items-center" id="nav-profile-item" style="display: none;">
+                    <a class="nav-link d-flex align-items-center gap-2" href="#" id="global-profile-btn" title="My Profile">
+                        <span id="navbar-username" class="fw-bold text-dark small"></span>
+                        <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                    </a>
+                 </li>
+
+                 <li class="nav-item" id="nav-logout-link" style="display: none;">
+                    <a class="nav-link text-danger" href="#" id="logout-button" title="Logout">
+                        <i class="bi bi-box-arrow-right" style="font-size: 1.5rem;"></i>
+                    </a>
+                 </li>
+            </ul>
+        </div>
 
     </div> 
     </nav>
-        <main class="container mt-4">
+
+    <main class="container mt-4">
         {% block content %}
         {% endblock %}
     </main>
 
+    <div class="modal fade" id="global-profile-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-lines-fill"></i> My Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 text-center">
+                        <div class="display-1 text-secondary"><i class="bi bi-person-circle"></i></div>
+                        <h4 id="gp-username">Username</h4>
+                        <small class="text-muted" id="gp-date">Joined: ...</small>
+                    </div>
+                    <form id="global-profile-form">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="gp-firstname">
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="gp-lastname">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="gp-email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-dark" id="gp-save-btn">Update Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/main.js' %}"></script> {% block scripts %}
+    <script src="{% static 'js/main.js' %}"></script> 
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("flowingo_token");
+            
+            // Navbar Elementleri
+            const loginLink = document.getElementById("nav-login-link");
+            const logoutLink = document.getElementById("nav-logout-link");
+            const profileItem = document.getElementById("nav-profile-item");
+            const centerLinks = document.getElementById("nav-center-links");
+            const logoutBtn = document.getElementById("logout-button");
+            const navbarUsername = document.getElementById("navbar-username"); // İsim alanı
+
+            // Profil Elementleri
+            const profileBtn = document.getElementById("global-profile-btn");
+            const profileModalEl = document.getElementById("global-profile-modal");
+            const profileModal = profileModalEl ? new bootstrap.Modal(profileModalEl) : null;
+            const saveBtn = document.getElementById("gp-save-btn");
+
+            // --- 1. GÖRÜNÜRLÜK AYARLARI ---
+            if (token) {
+                if(loginLink) loginLink.style.display = "none";
+                if(logoutLink) logoutLink.style.display = "block";
+                if(profileItem) profileItem.style.display = "block";
+                if(centerLinks) centerLinks.style.display = "block";
+                
+                // --- 2. SAYFA YÜKLENİNCE İSMİ ÇEK ---
+                fetchUsername();
+            } else {
+                if(loginLink) loginLink.style.display = "block";
+                if(logoutLink) logoutLink.style.display = "none";
+                if(profileItem) profileItem.style.display = "none";
+                if(centerLinks) centerLinks.style.display = "none";
+            }
+
+            // --- KULLANICI ADINI ÇEKEN FONKSİYON ---
+            async function fetchUsername() {
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/api/profile/", {
+                        headers: { "Authorization": `Token ${token}` }
+                    });
+                    if (response.ok) {
+                        const user = await response.json();
+                        // Navbar'daki isimi güncelle
+                        if(navbarUsername) navbarUsername.textContent = user.username;
+                    }
+                } catch (err) { console.error("İsim çekilemedi:", err); }
+            }
+
+            // --- 3. PROFIL BUTONUNA TIKLANINCA DETAYLARI GETİR ---
+            if (profileBtn && token) {
+                profileBtn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/api/profile/", {
+                            headers: { "Authorization": `Token ${token}` }
+                        });
+                        if (response.ok) {
+                            const user = await response.json();
+                            // Modal içini doldur
+                            document.getElementById("gp-username").textContent = user.username;
+                            document.getElementById("gp-date").textContent = "Joined: " + user.date_joined;
+                            document.getElementById("gp-firstname").value = user.first_name || "";
+                            document.getElementById("gp-lastname").value = user.last_name || "";
+                            document.getElementById("gp-email").value = user.email || "";
+                            
+                            profileModal.show();
+                        }
+                    } catch (err) { console.error(err); }
+                });
+            }
+
+            // --- 4. PROFIL GÜNCELLEME ---
+            if (saveBtn && token) {
+                saveBtn.addEventListener("click", async () => {
+                    const first_name = document.getElementById("gp-firstname").value;
+                    const last_name = document.getElementById("gp-lastname").value;
+                    const email = document.getElementById("gp-email").value;
+
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/api/profile/", {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Token ${token}`
+                            },
+                            body: JSON.stringify({ first_name, last_name, email })
+                        });
+                        if (response.ok) {
+                            alert("Profile updated successfully!");
+                            profileModal.hide();
+                            fetchUsername(); // İsmi güncelle (belki değişmiştir)
+                        } else {
+                            alert("Error updating profile.");
+                        }
+                    } catch (err) { console.error(err); }
+                });
+            }
+
+            // --- 5. ÇIKIŞ YAPMA ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    if(confirm("Are you sure you want to logout?")) {
+                        try {
+                            await fetch("http://127.0.0.1:8000/api/auth/logout/", {
+                                method: "POST",
+                                headers: { "Authorization": `Token ${token}` }
+                            });
+                        } catch(e) { console.log(e); }
+                        
+                        localStorage.removeItem("flowingo_token");
+                        window.location.href = "/auth/";
+                    }
+                });
+            }
+        });
+    </script>
+
+    {% block scripts %}
     {% endblock %}
 </body>
 </html>
